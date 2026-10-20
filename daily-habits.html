@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>تقييمي اليومي</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f4ef;--card:#fff;--tx:#1f2a24;--mu:#6b756f;--ac:#1f8a5b;--ac2:#e8f5ee;--bd:#e4e1d8;--warn:#d98a1c;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121815;--card:#1b231f;--tx:#eef3ef;--mu:#98a59d;--ac:#3dc489;--ac2:#1f3a2e;--bd:#2a352f;--warn:#e8a43c}}
+:root[data-theme="dark"]{--bg:#121815;--card:#1b231f;--tx:#eef3ef;--mu:#98a59d;--ac:#3dc489;--ac2:#1f3a2e;--bd:#2a352f;--warn:#e8a43c}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:"Tajawal",system-ui,sans-serif;line-height:1.5}
+.w{max-width:520px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:16px;margin-bottom:12px}
+h1{font-size:20px;margin:4px 0 2px}
+.mu{color:var(--mu);font-size:13px}
+.top{display:flex;align-items:center;gap:14px}
+.ring{width:84px;height:84px;flex:none;position:relative}
+.ring svg{transform:rotate(-90deg)}
+.ring b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:20px}
+.msg{font-weight:700;font-size:15px}
+h2{font-size:15px;margin:0 0 10px}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.chip{border:1.5px solid var(--bd);background:transparent;color:var(--tx);border-radius:14px;padding:10px 2px;font:inherit;font-size:13px;cursor:pointer;transition:.15s}
+.chip.on{background:var(--ac);border-color:var(--ac);color:#fff;transform:scale(1.03)}
+.list{display:flex;flex-direction:column;gap:8px}
+.row{display:flex;align-items:center;gap:10px;width:100%;text-align:start;border:1.5px solid var(--bd);background:transparent;color:var(--tx);border-radius:14px;padding:12px;font:inherit;font-size:15px;cursor:pointer;transition:.15s}
+.row .e{font-size:20px}
+.row .c{margin-inline-start:auto;width:24px;height:24px;border-radius:50%;border:2px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff}
+.row.on{background:var(--ac2);border-color:var(--ac)}
+.row.on .c{background:var(--ac);border-color:var(--ac)}
+.moods{display:flex;justify-content:space-between}
+.moods button{font-size:28px;background:none;border:2px solid transparent;border-radius:50%;width:52px;height:52px;cursor:pointer;opacity:.45}
+.moods button.on{opacity:1;border-color:var(--ac);background:var(--ac2)}
+.bar{height:10px;background:var(--bd);border-radius:6px;overflow:hidden;margin:8px 0 6px}
+.bar i{display:block;height:100%;background:var(--ac);border-radius:6px;transition:width .4s}
+.stats{display:flex;gap:8px}
+.stats div{flex:1;text-align:center;background:var(--ac2);border-radius:12px;padding:10px 4px}
+.stats b{display:block;font-size:20px}
+.heat{display:grid;grid-template-columns:repeat(14,1fr);gap:4px;margin-top:8px}
+.heat i{aspect-ratio:1;border-radius:5px;background:var(--bd)}
+.heat i[data-l="1"]{background:#f0c987}.heat i[data-l="2"]{background:#8fd1ae}.heat i[data-l="3"]{background:var(--ac)}
+.tip{background:var(--ac2);border-color:var(--ac)}
+.inp{flex:1;min-width:0;font:inherit;font-size:15px;color:var(--tx);background:var(--bg);border:1.5px solid var(--bd);border-radius:10px;padding:8px 10px}
+.foot{text-align:center;margin:18px 0 6px}
+.foot button{background:none;border:none;color:var(--mu);font:inherit;font-size:12px;text-decoration:underline;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="w">
+  <div class="card top">
+    <div class="ring"><svg width="84" height="84" viewBox="0 0 84 84"><circle cx="42" cy="42" r="36" fill="none" stroke="var(--bd)" stroke-width="9"/><circle id="rc" cx="42" cy="42" r="36" fill="none" stroke="var(--ac)" stroke-width="9" stroke-linecap="round" stroke-dasharray="226.2" stroke-dashoffset="226.2" style="transition:stroke-dashoffset .5s"/></svg><b id="pct">0%</b></div>
+    <div><h1>تقييمي اليومي</h1><div class="mu" id="dt"></div><div class="msg" id="msg"></div></div>
+  </div>
+
+  <div class="card" style="text-align:center"><div class="mu">✨ كلمة اليوم</div><div id="qt" class="msg" style="font-size:17px;margin:8px 0"></div><button id="qn" class="chip" style="padding:6px 14px">🔄 كلمة أخرى</button></div>
+  <div class="card tip"><div class="mu">💡 تحدّي اليوم</div><div id="tip" class="msg"></div></div>
+
+  <div class="card"><h2>🕌 الصلوات الخمس</h2><div class="grid" id="pr"></div></div>
+  <div class="card"><h2 style="display:flex;justify-content:space-between;align-items:center">✅ عاداتي <button id="ed" class="chip" style="padding:6px 12px">✏️ تعديل</button></h2><div class="list" id="hb"></div><div id="ad" style="display:none;gap:8px;margin-top:10px"><input id="ni" class="inp" placeholder="أضف خيارًا جديدًا..." maxlength="40"><button id="nb" class="chip on" style="padding:8px 14px">إضافة</button></div></div>
+  <div class="card"><h2>كيف كان يومي؟</h2><div class="moods" id="md"></div></div>
+
+  <div class="card">
+    <h2>🎯 هدفي: أختم 2026 بأفضل نسخة مني</h2>
+    <div class="mu" id="gt"></div>
+    <div class="bar"><i id="gb" style="width:0"></i></div>
+    <div class="mu" id="gn"></div>
+    <div class="stats" style="margin-top:10px">
+      <div><b id="sk">0</b><span class="mu">أيام متتالية 🔥</span></div>
+      <div><b id="gd">0</b><span class="mu">أيام ممتازة</span></div>
+      <div><b id="dl">0</b><span class="mu">يوم متبقٍ</span></div>
+    </div>
+    <div class="heat" id="ht"></div>
+    <div class="mu" style="margin-top:6px">آخر 14 يومًا (الأخضر الداكن = يوم ممتاز)</div>
+  </div>
+  <div class="foot"><button id="rs">مسح كل البيانات</button></div>
+</div>
+
+<script>
+var PR=["الفجر","الظهر","العصر","المغرب","العشاء"];
+var HB=[["sport","🏃","رياضة 20 دقيقة"],["quran","📖","ورد قرآن / أذكار"],["sleep","🌙","نوم قبل منتصف الليل"],["water","💧","8 أكواب ماء"],["read","📚","قراءة 10 صفحات"],["good","🤲","عمل خير أو صدقة"],["phone","📵","ساعة بلا جوال قبل النوم"]];
+var MD=["😞","😕","😐","🙂","😄"];
+var TIPS=["صلِّ الفجر في وقته اليوم، فهو يفتح لك بقية اليوم.","اجعل الرياضة 10 دقائق فقط إن كنت متعبًا، البداية هي الانتصار.","اقرأ صفحة من القرآن بعد كل صلاة، خمس صفحات بلا جهد.","اشرب كوب ماء مباشرة بعد الاستيقاظ.","أرسل رسالة طيبة لشخص عزيز، فهي صدقة.","ضع الجوال بعيدًا عن سريرك الليلة.","امشِ 15 دقيقة بعد المغرب.","اكتب شيئًا واحدًا أنت ممتن له اليوم.","اعمل أصعب مهمة في يومك أولًا.","نم مبكرًا الليلة، فإن الغد يبدأ من الليلة."];
+var KEY="habits2026_v1",S=null;
+function load(){try{var r=localStorage.getItem(KEY);if(r)S=JSON.parse(r)}catch(e){}
+if(!S||!S.days)S={days:{},start:ymd(new Date()),goal:null}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function ymd(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function daysLeft(){var n=new Date(),e=new Date(n.getFullYear(),11,31);return Math.round((e-new Date(n.getFullYear(),n.getMonth(),n.getDate()))/864e5)+1}
+function day(k){if(!S.days[k])S.days[k]={p:[0,0,0,0,0],h:{},m:0};return S.days[k]}
+function H(){return S.hb||HB}
+function score(k){var d=S.days[k];if(!d)return 0;var sh=0,s=0,m=5,x=d.p.filter(Boolean).length;H().forEach(function(h){var v=h[3]==="p"?(d.h[h[0]]||0)/100:(d.h[h[0]]?1:0);if(h[4]){sh+=h[4];s+=v*h[4]/100}else{m++;x+=v}});return s+x/m*(1-Math.min(sh,100)/100)}
+function lvl(s){return s>=.7?3:s>=.4?2:s>0?1:0}
+var today=ymd(new Date());
+function render(){
+var d=day(today),s=score(today),p=Math.round(s*100);
+if(S.goal===null)S.goal=Math.max(5,Math.round(daysLeft()*.7));
+document.getElementById("dt").textContent=new Date().toLocaleDateString("ar",{weekday:"long",day:"numeric",month:"long"});
+document.getElementById("pct").textContent=p+"%";
+document.getElementById("rc").style.strokeDashoffset=226.2*(1-s);
+document.getElementById("msg").textContent=p===100?"يوم مثالي، ما شاء الله! 🌟":p>=70?"يوم ممتاز، واصل! 💪":p>=40?"بداية جيدة، أكمل بقية اليوم":p>0?"خطوة صغيرة اليوم تصنع الفرق":"ابدأ بأول اختيار الآن ✨";
+var pr=document.getElementById("pr");pr.innerHTML="";
+PR.forEach(function(n,i){var b=document.createElement("button");b.className="chip"+(d.p[i]?" on":"");b.textContent=n;b.onclick=function(){d.p[i]=d.p[i]?0:1;save();render()};pr.appendChild(b)});
+var hb=document.getElementById("hb");hb.innerHTML="";
+document.getElementById("ad").style.display=editing?"flex":"none";document.getElementById("ed").textContent=editing?"✓ تم":"✏️ تعديل";
+H().forEach(function(h,i){
+if(editing){var r=document.createElement("div");r.className="row";r.style.cursor="default";r.style.flexWrap="wrap";var inp=document.createElement("input");inp.className="inp";inp.value=h[2];inp.onchange=function(){h[2]=inp.value.trim()||h[2];save()};var x=document.createElement("button");x.className="chip";x.textContent="🗑️";x.style.padding="6px 10px";x.onclick=function(){S.hb=H().filter(function(_,j){return j!==i});save();render()};var em=document.createElement("input");em.className="inp";em.style.cssText="flex:none;width:54px;text-align:center;font-size:20px;padding:8px 2px";em.value=h[1];em.onchange=function(){h[1]=Array.from(em.value.trim())[0]||h[1];save()};r.appendChild(em);r.appendChild(inp);var t=document.createElement("button");t.className="chip"+(h[3]==="p"?" on":"");t.textContent="٪";t.style.padding="6px 12px";t.onclick=function(){h[3]=h[3]==="p"?"":"p";save();render()};var sw=document.createElement("div");sw.style.cssText="width:100%;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mu)";sw.appendChild(document.createTextNode("حصته من اليوم %"));var wi=document.createElement("input");wi.type="number";wi.min=0;wi.max=90;wi.className="inp";wi.style.cssText="flex:none;width:76px;text-align:center";wi.value=h[4]||0;wi.onchange=function(){h[4]=Math.max(0,Math.min(90,Math.round(+wi.value||0)));save();render()};sw.appendChild(wi);sw.appendChild(document.createTextNode("(0 = حصة عادية)"));r.appendChild(t);r.appendChild(x);r.appendChild(sw);hb.appendChild(r);return}
+if(h[3]==="p"){var v=d.h[h[0]]||0,w=document.createElement("div");w.className="row"+(v>=70?" on":"");w.style.cssText="flex-wrap:wrap;cursor:default";w.innerHTML='<span class="e">'+h[1]+'</span><span>'+h[2]+(h[4]?' <small class="mu">('+h[4]+'%)</small>':'')+'</span><b class="pv" style="margin-inline-start:auto">'+v+'%</b>';var rg=document.createElement("input");rg.type="range";rg.min=0;rg.max=100;rg.step=10;rg.value=v;rg.style.cssText="width:100%;accent-color:var(--ac)";rg.oninput=function(){w.querySelector(".pv").textContent=rg.value+"%"};rg.onchange=function(){d.h[h[0]]=+rg.value;save();render()};w.appendChild(rg);hb.appendChild(w);return}
+var b=document.createElement("button");b.className="row"+(d.h[h[0]]?" on":"");b.innerHTML='<span class="e">'+h[1]+'</span><span>'+h[2]+(h[4]?' <small class="mu">('+h[4]+'%)</small>':'')+'</span><span class="c">'+(d.h[h[0]]?"✓":"")+'</span>';b.onclick=function(){d.h[h[0]]=d.h[h[0]]?0:1;save();render()};hb.appendChild(b)});
+var md=document.getElementById("md");md.innerHTML="";
+MD.forEach(function(e,i){var b=document.createElement("button");b.className=d.m===i+1?"on":"";b.textContent=e;b.onclick=function(){d.m=d.m===i+1?0:i+1;save();render()};md.appendChild(b)});
+var good=0;Object.keys(S.days).forEach(function(k){if(score(k)>=.7)good++});
+var sk=0,c=new Date();if(score(ymd(c))<.6)c.setDate(c.getDate()-1);
+while(score(ymd(c))>=.6){sk++;c.setDate(c.getDate()-1)}
+document.getElementById("sk").textContent=sk;
+document.getElementById("gd").textContent=good;
+document.getElementById("dl").textContent=daysLeft();
+document.getElementById("gt").textContent="الهدف: "+S.goal+" يومًا ممتازًا (70% فأكثر) قبل نهاية السنة";
+document.getElementById("gb").style.width=Math.min(100,good/S.goal*100)+"%";
+document.getElementById("gn").textContent=good>=S.goal?"حققت هدفك! 🏆 استمر":"بقي "+(S.goal-good)+" يومًا لتحقق هدفك";
+var ht=document.getElementById("ht");ht.innerHTML="";
+for(var i=13;i>=0;i--){var x=new Date();x.setDate(x.getDate()-i);var e=document.createElement("i");e.dataset.l=lvl(score(ymd(x)));ht.appendChild(e)}
+}
+document.getElementById("tip").textContent=TIPS[Math.floor(new Date()/864e5)%TIPS.length];
+var QT=["خطوة صغيرة كل يوم أفضل من حلم كبير بلا عمل.","أنت لا تحتاج أن تكون مثاليًا، تحتاج أن تستمر.","من صبر على الطريق وصل.","اليوم فرصة جديدة، فلا تضيّعها بالأمس.","الانضباط هو أن تفعل ما يجب حين لا تشعر بالرغبة.","قليل دائم خير من كثير منقطع.","كل يوم تلتزم فيه تقترب من نسختك الأفضل.","التعب ساعة، والفخر طويل.","لا تقارن بدايتك بنهاية غيرك.","عاداتك الصغيرة اليوم هي حياتك الكبيرة غدًا.","إذا سقطت اليوم فانهض غدًا، المهم ألا تتوقف.","الصلاة في وقتها تضبط إيقاع يومك كله.","من غلب نفسه فقد غلب أكبر خصم.","ما تفعله اليوم يصنع من ستكون بعد سنة.","اجعل نيتك لله، وسيهون عليك التعب.","الراحة الحقيقية تأتي بعد الإنجاز.","لا تنتظر الحافز، ابدأ فيأتيك.","أيام قليلة متبقية من السنة، اجعلها تستحق.","صبرك اليوم هو فرحتك غدًا.","كن ممتنًا لما أنجزت، وطموحًا لما بقي.","الإرادة تتقوى كالعضلة، بالتمرين المستمر.","الشجاعة أن تبدأ، والنجاح أن تكمل.","نفسك أمانة عندك، فأحسن إليها.","لا يوجد يوم عادي إذا عشته بقصد.","أن تتأخر خير من ألا تبدأ أبدًا.","اختر الصعب الآن لتعيش السهل لاحقًا.","ثق بالعملية، النتائج تأتي في وقتها.","كل علامة ✓ تضغطها هي وعد وفيت به لنفسك.","ختام السنة يصنعه ما تفعله الآن."];
+var qi=Math.floor(new Date()/864e5)%QT.length;
+function showQ(){document.getElementById("qt").textContent="«"+QT[qi]+"»"}
+document.getElementById("qn").onclick=function(){qi=(qi+1)%QT.length;showQ()};showQ();
+document.getElementById("rs").onclick=function(){if(confirm("هل تريد مسح كل البيانات؟")){S={days:{},start:today,goal:null};save();render()}};
+var editing=false;
+document.getElementById("ed").onclick=function(){if(!S.hb)S.hb=HB.map(function(h){return h.slice()});editing=!editing;render()};
+document.getElementById("nb").onclick=function(){var ni=document.getElementById("ni"),v=ni.value.trim();if(!v)return;S.hb=H().concat([["c"+Date.now(),"⭐",v]]);ni.value="";save();render()};
+load();render();
+</script>
+</body>
+</html>
